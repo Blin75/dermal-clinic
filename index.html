@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DermAL — Dermatology &amp; Aesthetic Clinic | Gjilan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#060910;
+    --bg-soft:#0B1120;
+    --panel:rgba(255,255,255,0.045);
+    --panel-strong:rgba(255,255,255,0.07);
+    --border:rgba(255,255,255,0.09);
+    --text:#EAF0F7;
+    --muted:#8A96AC;
+    --cyan:#2FE6D0;
+    --violet:#8B6BFF;
+    --magenta:#FF4FA0;
+    --grad:linear-gradient(120deg, var(--cyan), var(--violet));
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Inter', sans-serif;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  h1,h2,h3{
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:600;
+    letter-spacing:-0.01em;
+    color:var(--text);
+  }
+  a{color:inherit;}
+  img{max-width:100%; display:block;}
+  .wrap{max-width:1120px; margin:0 auto; padding:0 28px; position:relative; z-index:2;}
+
+  /* background texture: grid + glow */
+  .bg-grid{
+    position:fixed; inset:0; z-index:0; pointer-events:none;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
+    background-size:64px 64px;
+    -webkit-mask-image:radial-gradient(ellipse 80% 60% at 50% 0%, #000 40%, transparent 100%);
+            mask-image:radial-gradient(ellipse 80% 60% at 50% 0%, #000 40%, transparent 100%);
+  }
+
+  /* reveal-on-scroll */
+  .reveal{opacity:0; transform:translateY(28px); transition:opacity .8s ease, transform .8s ease;}
+  .reveal.in-view{opacity:1; transform:translateY(0);}
+  .reveal.d1{transition-delay:.08s;} .reveal.d2{transition-delay:.16s;} .reveal.d3{transition-delay:.24s;}
+  .reveal.d4{transition-delay:.32s;} .reveal.d5{transition-delay:.4s;} .reveal.d6{transition-delay:.48s;}
+
+  /* NAV */
+  header{
+    position:sticky; top:0; z-index:50;
+    background:rgba(6,9,16,0.65);
+    backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);
+    border-bottom:1px solid var(--border);
+  }
+  nav.wrap{
+    display:flex; align-items:center; justify-content:space-between;
+    padding-top:14px; padding-bottom:14px;
+  }
+  .brand{
+    display:flex; align-items:center;
+    background:linear-gradient(135deg, rgba(255,255,255,0.14), rgba(255,255,255,0.05));
+    border:1px solid var(--border); border-radius:14px;
+    padding:6px 16px;
+    box-shadow:0 4px 18px rgba(0,0,0,0.25);
+  }
+  .brand img{height:38px; width:auto;}
+  .navlinks{display:flex; gap:34px; font-size:0.92rem;}
+  .navlinks a{
+    position:relative; text-decoration:none; color:var(--muted); padding-bottom:4px;
+    transition:color .2s ease;
+  }
+  .navlinks a::after{
+    content:''; position:absolute; left:0; bottom:0; width:0; height:2px;
+    background:var(--grad); transition:width .25s ease;
+  }
+  .navlinks a:hover{color:var(--text);}
+  .navlinks a:hover::after{width:100%;}
+  .navright{display:flex; align-items:center; gap:14px;}
+  .ig-link{
+    display:inline-flex; align-items:center; justify-content:center;
+    width:38px; height:38px; border:1px solid var(--border); border-radius:50%;
+    color:var(--text); transition:border-color .2s ease, transform .2s ease, background .2s ease;
+  }
+  .ig-link:hover{border-color:var(--cyan); transform:translateY(-2px); background:var(--panel);}
+  .ig-link svg{width:17px; height:17px;}
+  .navcall{
+    background:var(--grad); color:#04140F;
+    padding:10px 20px; border-radius:999px; text-decoration:none; font-size:0.88rem; font-weight:600;
+    white-space:nowrap; box-shadow:0 0 24px rgba(47,230,208,0.35);
+    transition:transform .2s ease, box-shadow .2s ease;
+  }
+  .navcall:hover{transform:translateY(-2px); box-shadow:0 4px 32px rgba(139,107,255,0.45);}
+  @media (max-width:780px){ .navlinks{display:none;} }
+
+  /* HERO */
+  .hero{
+    padding:120px 0 96px;
+    position:relative; overflow:hidden;
+    border-bottom:1px solid var(--border);
+  }
+  .orb{
+    position:absolute; border-radius:50%; filter:blur(80px); opacity:0.55; z-index:0;
+    animation:float 14s ease-in-out infinite;
+  }
+  .orb-cyan{width:420px; height:420px; background:var(--cyan); top:-160px; right:-80px;}
+  .orb-violet{width:380px; height:380px; background:var(--violet); bottom:-140px; left:-100px; animation-delay:-6s;}
+  @keyframes float{
+    0%,100%{transform:translate(0,0) scale(1);}
+    50%{transform:translate(30px,-24px) scale(1.08);}
+  }
+  .hero-grid{
+    display:grid; grid-template-columns:1.3fr 1fr; gap:56px; align-items:end;
+  }
+  @media (max-width:860px){ .hero-grid{grid-template-columns:1fr;} }
+  .hero-logo{
+    display:flex; justify-content:center; margin-bottom:44px;
+  }
+  .hero-logo-panel{
+    position:relative;
+    display:inline-flex; align-items:center; justify-content:center;
+    padding:26px 46px;
+    border-radius:28px;
+    background:radial-gradient(120% 140% at 50% 20%, rgba(255,255,255,0.16), rgba(255,255,255,0.04) 60%);
+    border:1px solid var(--border);
+    box-shadow:0 0 0 1px rgba(255,255,255,0.03) inset, 0 20px 60px rgba(0,0,0,0.35), 0 0 60px rgba(47,230,208,0.12);
+  }
+  .hero-logo-panel::before{
+    content:''; position:absolute; inset:-1px; border-radius:28px; padding:1px;
+    background:linear-gradient(135deg, rgba(47,230,208,0.5), rgba(139,107,255,0.4));
+    -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite:xor; mask-composite:exclude;
+    opacity:0.6;
+  }
+  .hero-logo img{
+    position:relative; height:96px; width:auto;
+  }
+  @media (max-width:560px){
+    .hero-logo-panel{padding:18px 30px; border-radius:22px;}
+    .hero-logo img{height:64px;}
+  }
+
+  .hero-eyebrow{
+    display:inline-flex; align-items:center; gap:8px;
+    font-size:0.85rem; color:var(--cyan); margin-bottom:24px;
+    border:1px solid var(--border); padding:6px 14px; border-radius:999px; background:var(--panel);
+  }
+  .hero-eyebrow .dot{width:6px; height:6px; border-radius:50%; background:var(--cyan); box-shadow:0 0 10px var(--cyan); animation:pulse 2s infinite;}
+  @keyframes pulse{0%,100%{opacity:1;} 50%{opacity:.3;}}
+  .hero h1{
+    font-size:clamp(2.5rem, 5vw, 4.1rem);
+    line-height:1.05;
+  }
+  .hero h1 .grad{
+    background:var(--grad); -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .hero-sub{
+    margin-top:26px; font-size:1.08rem; max-width:46ch; color:var(--muted);
+  }
+  .hero-panel{
+    border-left:1px solid var(--border); padding-left:36px;
+  }
+  @media (max-width:860px){ .hero-panel{border-left:none; border-top:1px solid var(--border); padding-left:0; padding-top:28px;} }
+  .hero-panel dl{display:grid; grid-template-columns:auto 1fr; gap:12px 16px; font-size:0.95rem;}
+  .hero-panel dt{color:var(--muted);}
+  .hero-panel dd{font-weight:600; color:var(--text);}
+  .hero-cta{margin-top:30px; display:flex; gap:14px; flex-wrap:wrap;}
+  .btn{
+    display:inline-block; padding:14px 26px; border-radius:999px;
+    text-decoration:none; font-size:0.95rem; font-weight:600;
+    transition:transform .2s ease, box-shadow .2s ease, background .2s ease;
+  }
+  .btn-solid{background:var(--grad); color:#04140F; box-shadow:0 0 28px rgba(47,230,208,0.3);}
+  .btn-solid:hover{transform:translateY(-2px); box-shadow:0 6px 30px rgba(139,107,255,0.45);}
+  .btn-line{border:1px solid var(--border); color:var(--text); background:var(--panel);}
+  .btn-line:hover{border-color:var(--cyan); color:var(--cyan);}
+
+  /* GENERIC SECTION */
+  section{padding:88px 0; position:relative;}
+  .section-label{
+    font-size:0.82rem; letter-spacing:0.04em; color:var(--cyan); margin-bottom:14px;
+    display:flex; align-items:center; gap:8px;
+  }
+  .section-label::before{content:''; width:18px; height:1px; background:var(--cyan);}
+
+  .about{border-bottom:1px solid var(--border);}
+  .about .wrap{display:grid; grid-template-columns:0.8fr 1.2fr; gap:56px; align-items:center;}
+  @media (max-width:860px){ .about .wrap{grid-template-columns:1fr;} }
+  .about h2{font-size:2.1rem; margin-bottom:20px;}
+  .about p{max-width:60ch; color:var(--muted);}
+  .about p + p{margin-top:14px;}
+
+  .glass-card{
+    background:var(--panel); border:1px solid var(--border); border-radius:20px;
+    backdrop-filter:blur(10px);
+    transition:transform .3s ease, border-color .3s ease, box-shadow .3s ease;
+  }
+  .about-photo{
+    aspect-ratio:4/5; overflow:hidden; padding:10px;
+  }
+  .about-photo img{width:100%; height:100%; object-fit:cover; border-radius:14px;}
+  .about-photo:hover{transform:translateY(-6px); border-color:rgba(47,230,208,0.4); box-shadow:0 20px 50px rgba(47,230,208,0.12);}
+
+  .icon-badge{
+    width:44px; height:44px; margin-bottom:18px;
+    display:flex; align-items:center; justify-content:center;
+    border-radius:12px; background:rgba(47,230,208,0.08); border:1px solid rgba(47,230,208,0.25);
+  }
+  .icon-badge svg{width:22px; height:22px; stroke:var(--cyan);}
+
+  /* SERVICES */
+  .services{border-bottom:1px solid var(--border);}
+  .services-head{max-width:60ch; margin-bottom:48px;}
+  .services-head h2{font-size:2.1rem;}
+  .service-grid{
+    display:grid; grid-template-columns:repeat(3, 1fr); gap:16px;
+  }
+  @media (max-width:860px){ .service-grid{grid-template-columns:repeat(2,1fr);} }
+  @media (max-width:560px){ .service-grid{grid-template-columns:1fr;} }
+  .service-card{padding:30px 26px;}
+  .service-card:hover{transform:translateY(-6px); border-color:rgba(139,107,255,0.35); box-shadow:0 20px 44px rgba(139,107,255,0.14);}
+  .service-card h3{font-size:1.08rem; margin-bottom:10px; font-weight:600;}
+  .service-card p{font-size:0.92rem; color:var(--muted);}
+
+  /* GALLERY */
+  .gallery{border-bottom:1px solid var(--border);}
+  .gallery-head{max-width:60ch; margin-bottom:48px;}
+  .gallery-head h2{font-size:2.1rem;}
+  .gallery-grid{
+    display:grid; grid-template-columns:repeat(auto-fit, minmax(230px, 1fr)); gap:16px;
+  }
+  .gallery-grid figure{margin:0; overflow:hidden; padding:8px;}
+  .gallery-grid figure:hover{transform:translateY(-6px); border-color:rgba(255,79,160,0.35); box-shadow:0 20px 44px rgba(255,79,160,0.14);}
+  .gallery-grid img{width:100%; height:100%; object-fit:cover; display:block; border-radius:12px; aspect-ratio:4/5;}
+  .gallery-grid figcaption{padding:14px 10px 4px; font-size:0.85rem; color:var(--muted);}
+  .g-poster{background:rgba(255,255,255,0.9);}
+  .g-poster img{object-fit:contain; background:#fff; border-radius:10px;}
+
+  /* HOURS + CONTACT */
+  .visit{border-bottom:1px solid var(--border);}
+  .visit .wrap{display:grid; grid-template-columns:1fr 1fr; gap:56px;}
+  @media (max-width:860px){ .visit .wrap{grid-template-columns:1fr;} }
+  .visit h2{font-size:2.1rem;}
+  .hours-table{width:100%; border-collapse:collapse; margin-top:20px;}
+  .hours-table td{padding:12px 4px; border-bottom:1px solid var(--border); font-size:0.98rem;}
+  .hours-table tr:hover td{color:var(--cyan);}
+  .hours-table td:last-child{text-align:right; font-weight:600;}
+  .contact-item{margin-top:24px; padding:18px 20px;}
+  .contact-item .k{font-size:0.82rem; color:var(--muted); margin-bottom:6px;}
+  .contact-item .v{font-size:1.2rem; font-weight:600;}
+  .contact-item .v a{text-decoration:none;}
+  .contact-item .v a:hover{color:var(--cyan);}
+
+  /* MAP */
+  .map{padding:0; border-bottom:1px solid var(--border);}
+  .map-frame{position:relative;}
+  .map iframe{
+    width:100%; height:420px; border:0; display:block;
+    filter:invert(0.92) hue-rotate(180deg) contrast(0.9) brightness(0.95);
+  }
+  .map-caption{padding:22px 0;}
+  .map-caption .wrap{display:flex; justify-content:space-between; align-items:center; width:100%; flex-wrap:wrap; gap:12px;}
+
+  footer{
+    padding:40px 0; font-size:0.85rem; color:var(--muted);
+    display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px;
+  }
+  .footer-ig{display:inline-flex; align-items:center; gap:8px; text-decoration:none;}
+  .footer-ig:hover{color:var(--cyan);}
+  .footer-ig svg{width:15px; height:15px;}
+</style>
+</head>
+<body>
+
+<div class="bg-grid"></div>
+
+<header>
+  <nav class="wrap">
+    <div class="brand"><img src="assets/logo.png" alt="DermAL — Dermatology & Aesthetic Clinic"></div>
+    <div class="navlinks">
+      <a href="#rreth">Rreth Nesh</a>
+      <a href="#sherbimet">Shërbimet</a>
+      <a href="#vizita">Vizita</a>
+      <a href="#lokacioni">Lokacioni</a>
+    </div>
+    <div class="navright">
+      <a class="ig-link" href="https://www.instagram.com/dermal.clinic/" target="_blank" rel="noopener" aria-label="Instagram">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1"/></svg>
+      </a>
+      <a class="navcall" href="tel:045525452">045 52 54 52</a>
+    </div>
+  </nav>
+</header>
+
+<section class="hero">
+  <div class="orb orb-cyan"></div>
+  <div class="orb orb-violet"></div>
+  <div class="wrap">
+    <div class="hero-logo reveal"><div class="hero-logo-panel"><img src="assets/logo.png" alt="DermAL — Dermatology & Aesthetic Clinic"></div></div>
+    <div class="hero-grid">
+    <div>
+      <div class="hero-eyebrow reveal"><span class="dot"></span>Klinikë Dermatologjike &amp; Estetike — Gjilan</div>
+      <h1 class="reveal d1">Kujdes për lëkurën, <span class="grad">udhëhequr</span> nga specialistja juaj.</h1>
+      <p class="hero-sub reveal d2">DermAL ofron diagnostikim dhe trajtim të kushteve të lëkurës, si dhe shërbime estetike, nën përkujdesjen e Dr. Ajshe Shurdhanit, specialiste e dermatovenerologjisë në Gjilan.</p>
+      <div class="hero-cta reveal d3">
+        <a class="btn btn-solid" href="tel:045525452">Telefono për Termin</a>
+        <a class="btn btn-line" href="#lokacioni">Shiko Lokacionin</a>
+      </div>
+    </div>
+    <div class="hero-panel reveal d3">
+      <dl>
+        <dt>Mjekja</dt><dd>Dr. Ajshe Shurdhani</dd>
+        <dt>Specializimi</dt><dd>Dermatovenerologji</dd>
+        <dt>Orari</dt><dd>15:00 – 19:00</dd>
+        <dt>Ditët</dt><dd>E Hënë – E Shtunë</dd>
+        <dt>Qyteti</dt><dd>Gjilan, 60000</dd>
+      </dl>
+    </div>
+    </div>
+  </div>
+</section>
+
+<section class="about" id="rreth">
+  <div class="wrap">
+    <div class="glass-card about-photo reveal">
+      <img src="assets/dr-ajshe.jpg" alt="Dr. Ajshe Shurdhani — DermAL">
+    </div>
+    <div class="reveal d2">
+      <div class="section-label">Rreth Klinikës</div>
+      <h2>Dr. Ajshe Shurdhani</h2>
+      <p style="color:var(--cyan); font-weight:600; margin-bottom:14px;">Specialiste e Dermatovenerologjisë</p>
+      <p>Dr. Ajshe Shurdhani është specialiste e dermatovenerologjisë, e përkushtuar ndaj shëndetit, bukurisë dhe mirëqenies së lëkurës. Fusha e saj profesionale përfshin diagnostikimin dhe trajtimin e sëmundjeve të lëkurës, flokëve dhe thonjve, si dhe të infeksioneve seksualisht të transmetueshme.</p>
+      <p>Ajo ka përfunduar Fakultetin e Mjekësisë në Universitetin e Prishtinës, ndërsa specializimin në dermatovenerologji e ka përfunduar në University "St. Cyril and Methodius" (UKIM).</p>
+      <p>Në DermAL, Dr. Shurdhani beson se çdo lëkurë është unike dhe kërkon një qasje të personalizuar. Çdo konsultë fillon me një vlerësim të detajuar dhe të kujdesshëm, për të kuptuar nevojat specifike të pacientit dhe për të përcaktuar qasjen më të përshtatshme terapeutike.</p>
+      <p>Me një kombinim të ekspertizës mjekësore, përvojës dhe përkushtimit ndaj rezultateve natyrale, synimi i saj është t'i ofrojë çdo pacienti kujdes të sigurt, profesional dhe të standardeve të larta — sepse shëndeti i lëkurës meriton vëmendjen më të mirë.</p>
+    </div>
+  </div>
+</section>
+
+<section class="services" id="sherbimet">
+  <div class="wrap">
+    <div class="services-head reveal">
+      <div class="section-label">Shërbimet</div>
+      <h2>Fusha e kujdesit dermatovenerologjik</h2>
+    </div>
+    <div class="service-grid">
+      <div class="service-card glass-card reveal d1">
+        <div class="icon-badge"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.4"><circle cx="10" cy="10" r="6.5"/><line x1="14.7" y1="14.7" x2="21" y2="21"/></svg></div>
+        <h3>Diagnostikim i Lëkurës</h3>
+        <p>Ekzaminim dhe vlerësim i çrregullimeve të lëkurës, si akne, ekzemë, psoriazë dhe alergji.</p>
+      </div>
+      <div class="service-card glass-card reveal d2">
+        <div class="icon-badge"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.4"><circle cx="12" cy="12" r="9"/><circle cx="9" cy="10" r="1.4" fill="var(--cyan)" stroke="none"/><circle cx="14" cy="14" r="1.8" fill="var(--cyan)" stroke="none"/><circle cx="15" cy="8" r="1" fill="var(--cyan)" stroke="none"/></svg></div>
+        <h3>Kontrolli i Nevuseve</h3>
+        <p>Vlerësim dhe monitorim i nevave dhe formacioneve të tjera të lëkurës.</p>
+      </div>
+      <div class="service-card glass-card reveal d3">
+        <div class="icon-badge"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.4"><path d="M12 3c3 3.5 6 7.2 6 11a6 6 0 1 1-12 0c0-3.8 3-7.5 6-11z"/></svg></div>
+        <h3>Trajtim i Infeksioneve</h3>
+        <p>Diagnostikim dhe trajtim i infeksioneve fungale, virale dhe bakteriale të lëkurës.</p>
+      </div>
+      <div class="service-card glass-card reveal d1">
+        <div class="icon-badge"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.4"><path d="M12 21s-7-4.5-9.5-9A5.5 5.5 0 0 1 12 6a5.5 5.5 0 0 1 9.5 6c-2.5 4.5-9.5 9-9.5 9z"/></svg></div>
+        <h3>Venerologji</h3>
+        <p>Diagnostikim dhe trajtim diskret i infeksioneve seksualisht të transmetueshme.</p>
+      </div>
+      <div class="service-card glass-card reveal d2">
+        <div class="icon-badge"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.4"><path d="M8 20c0-5 1-8 4-14 3 6 4 9 4 14"/><path d="M12 6V3"/></svg></div>
+        <h3>Kujdes për Flokë e Thonj</h3>
+        <p>Vlerësim i problemeve të rënies së flokëve dhe çrregullimeve të thonjve.</p>
+      </div>
+      <div class="service-card glass-card reveal d3">
+        <div class="icon-badge"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.4"><path d="M4 12c2-5 6-8 8-8s6 3 8 8c-2 5-6 8-8 8s-6-3-8-8z"/><circle cx="12" cy="12" r="2.4"/></svg></div>
+        <h3>Konsultë e Përgjithshme</h3>
+        <p>Këshillim mbi kujdesin ditor të lëkurës dhe rekomandime për trajtim afatgjatë.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="gallery">
+  <div class="wrap">
+    <div class="gallery-head reveal">
+      <div class="section-label">Galeria</div>
+      <h2>Nga klinika jonë</h2>
+    </div>
+    <div class="gallery-grid">
+      <figure class="glass-card reveal d1">
+        <img src="assets/led-mask.jpg" alt="Terapi me maskë LED në DermAL">
+        <figcaption>Terapi me dritë LED</figcaption>
+      </figure>
+      <figure class="glass-card g-poster reveal d2">
+        <img src="assets/hydrofacial.jpg" alt="Trajtimi Hydrofacial në DermAL">
+        <figcaption>Trajtimi Hydrofacial</figcaption>
+      </figure>
+      <figure class="glass-card reveal d3">
+        <img src="assets/microneedling.jpg" alt="Trajtim me Microneedling në DermAL">
+        <figcaption>Trajtim me Microneedling</figcaption>
+      </figure>
+      <figure class="glass-card reveal d1">
+        <img src="assets/botox-closeup.jpg" alt="Trajtim me Botox nga afër në DermAL">
+        <figcaption>Trajtim me Botox — nga afër</figcaption>
+      </figure>
+      <figure class="glass-card g-poster reveal d2">
+        <img src="assets/acne-awareness.jpg" alt="Diagnostikim i akneve në DermAL">
+        <figcaption>Vlerësim dhe trajtim i akneve</figcaption>
+      </figure>
+      <figure class="glass-card g-poster reveal d3">
+        <img src="assets/skincare-routine.jpg" alt="Rutina ditore e lëkurës në DermAL">
+        <figcaption>Fillimi i freskët për çdo ditë</figcaption>
+      </figure>
+      <figure class="glass-card g-poster reveal d1">
+        <img src="assets/botox-promo.jpg" alt="Trajtim me Botox në DermAL">
+        <figcaption>Botox — thuaj lamtumirë rrudhave</figcaption>
+      </figure>
+      <figure class="glass-card reveal d2">
+        <img src="assets/dermapen-forehead.jpg" alt="Trajtim me Dermapen në DermAL">
+        <figcaption>Trajtim me Dermapen</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<section class="visit" id="vizita">
+  <div class="wrap">
+    <div class="reveal d1">
+      <div class="section-label">Orari i Punës</div>
+      <h2>Kur na gjeni</h2>
+      <table class="hours-table">
+        <tr><td>E Hënë</td><td>15:00 – 19:00</td></tr>
+        <tr><td>E Martë</td><td>15:00 – 19:00</td></tr>
+        <tr><td>E Mërkurë</td><td>15:00 – 19:00</td></tr>
+        <tr><td>E Enjte</td><td>15:00 – 19:00</td></tr>
+        <tr><td>E Premte</td><td>15:00 – 19:00</td></tr>
+        <tr><td>E Shtunë</td><td>12:00 – 16:00</td></tr>
+        <tr><td>E Diel</td><td>Mbyllur</td></tr>
+      </table>
+    </div>
+    <div class="reveal d2">
+      <div class="section-label">Kontakti</div>
+      <h2>Na kontaktoni</h2>
+      <div class="contact-item glass-card">
+        <div class="k">Telefon</div>
+        <div class="v"><a href="tel:045525452">045 52 54 52</a></div>
+      </div>
+      <div class="contact-item glass-card">
+        <div class="k">Adresa</div>
+        <div class="v">Gjilan, 60000, Kosovë</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="map" id="lokacioni">
+  <div class="map-frame">
+    <iframe
+      src="https://maps.google.com/maps?q=42.4606139,21.4708277&z=16&output=embed"
+      allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+    </iframe>
+  </div>
+  <div class="map-caption">
+    <div class="wrap">
+      <span>DermAL, Gjilan 60000</span>
+      <a class="btn btn-line" href="https://maps.app.goo.gl/CQmBpokAheYb1Zgk6" target="_blank" rel="noopener">Hap në Google Maps</a>
+    </div>
+  </div>
+</section>
+
+<footer class="wrap">
+  <span>© DermAL — Dr. Ajshe Shurdhani</span>
+  <a class="footer-ig" href="https://www.instagram.com/dermal.clinic/" target="_blank" rel="noopener">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1"/></svg>
+    @dermal.clinic
+  </a>
+  <span>Gjilan, Kosovë</span>
+</footer>
+
+<script>
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting){ e.target.classList.add('in-view'); io.unobserve(e.target); }
+    });
+  }, {threshold:0.15});
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+</script>
+
+</body>
+</html>
